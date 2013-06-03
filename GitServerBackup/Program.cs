@@ -56,14 +56,14 @@ namespace GitServerBackup
 
         static void Backup(string folder)
         {
-            if (0 == LaunchCommandLineApp("git", "rev-parse", folder))
+            if (0 == LaunchCommandLineApp("git", "rev-parse", folder, true))
             {
-                string folderName = folder.Substring(folder.LastIndexOf("\\")+1);
-                if (0 == LaunchCommandLineApp("git", "bundle create "+_backupTargetPath+"\\"+folderName+".bundle --all", folder))
-                {
-                    System.Console.WriteLine("git bundle " + folder);
-                }
-                System.Console.WriteLine("git bundle " + folder);
+                string folderName = folder.Substring(folder.LastIndexOf("\\") + 1);
+                System.Console.WriteLine("==================================================");
+                System.Console.WriteLine("Running git bundle for: " + folderName);
+                System.Console.WriteLine("==================================================");
+                LaunchCommandLineApp("git", "bundle create " + _backupTargetPath + "\\" + folderName + ".bundle --all", folder, false);
+                System.Console.WriteLine("");
             }
             else
             {
@@ -83,10 +83,10 @@ namespace GitServerBackup
             }
         }
 
-        static int LaunchCommandLineApp(string executable, string arguments, string path)
+        static int LaunchCommandLineApp(string executable, string arguments, string path, Boolean hide)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo();
-            startInfo.CreateNoWindow = true;
+            startInfo.CreateNoWindow = hide;
             startInfo.UseShellExecute = false;
             startInfo.FileName = executable;
             startInfo.WindowStyle = ProcessWindowStyle.Hidden;
